@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLX TRADE — Solana Market</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ZCMNULI515nEes4GxPc1J1z0jAsVqZfqhToLFOpA8fPxfWjVH5ozwHAsTjIChRIKqTKmpJeId_QfjX_KrLBEM70sHvIjnX2RIDDPtJKvxLmDSpIoe9oniRnGS8VV3AnT_obuPLvu2TLg9vPMWj2oGZoOHmgOohvJN82tsq4pi-ZcHXQBsKiqji8ZkYsIg4Up_a8JfkBSiLj4S4IQ-yAGExfZFqGZVcXKh4NPAiSIKro_Wl_3oOF5LjkQ__orDnw51l8GvYZE3Lj-1zjHS9euFPFRJS2wiOLDCv5meF41034tjUje-ceTQaSNw5j4VGNrId1sN26cey5mXexlaK5_Fg" charset="UTF-8"></script><script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+<style>
+:root{--bg:#080d17;--panel:#111b2b;--panel2:#172438;--line:#26364d;--muted:#8da3c2;--text:#edf4ff;--green:#31e0b0;--red:#ff647c;--blue:#6ca8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,system-ui,Segoe UI,Arial,sans-serif}
+header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#0e1726;position:sticky;top:0;z-index:5}
+.brand{font-size:23px;font-weight:800;letter-spacing:-.8px}.brand span{color:var(--green)}
+button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);padding:10px 14px}
+button:hover{filter:brightness(1.18)}button.primary{background:#125b4a;border-color:#187e67;color:#70ffda}button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:1500px;margin:auto;padding:22px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.sub{color:var(--muted);font-size:12px}
+.wallet{display:flex;align-items:center;gap:10px}.network{color:#f7c66a;background:#3a2b12;padding:7px 10px;border-radius:20px;font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px}.stat{padding:17px}.stat label{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:23px;margin-top:8px}.green{color:var(--green)}.red{color:var(--red)}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.tabs button.active{background:#124b40;border-color:#1d8a70;color:#67ffda}
+.controls{display:grid;grid-template-columns:1fr 150px 150px;gap:10px;margin-bottom:14px}.controls input,.controls select,.swap-input{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:12px;min-width:0}
+.panel-head{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:700;display:flex;justify-content:space-between;gap:10px}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);white-space:nowrap}th{background:#172438;color:var(--muted);font-size:11px;text-transform:uppercase;position:sticky;top:0}tr:hover td{background:#16243a}
+.token{display:flex;align-items:center;gap:10px}.avatar{width:34px;height:34px;border-radius:50%;background:#1b5556;display:grid;place-items:center;color:#83ffe0;font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.token-name{font-weight:700}.token-symbol{font-size:11px;color:var(--muted);margin-top:2px}.actions{display:flex;gap:6px}.buy{background:#135b49;color:#6dffce;border:0}.sell{background:#592a3a;color:#ff9aab;border:0}
+.status{font-size:12px;color:var(--muted)}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px}.empty{padding:30px;text-align:center;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:16px}.pad{padding:17px}.wallet-info{line-height:1.8;color:var(--muted);overflow-wrap:anywhere}.wallet-info strong{color:var(--text)}.notice{border:1px solid #6d5123;background:#2b2416;color:#f4d38d;padding:12px;border-radius:8px;font-size:12px;line-height:1.6}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}.modal.show{display:flex}.dialog{width:min(480px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}.dialog h2{margin-top:0}.dialog label{display:block;color:var(--muted);font-size:12px;margin:12px 0 6px}.dialog input{width:100%}.dialog-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{padding:22px;text-align:center;color:var(--muted);font-size:11px}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}}
+@media(max-width:520px){main{padding:13px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:18px}header{padding:0 13px}.brand{font-size:19px}.topline{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span>SOLX</span> TRADE</div>
+  <div class="wallet"><span class="network">SOLANA DEVNET</span><button id="walletBtn" class="primary">Connect Wallet</button></div>
+</header>
+<main>
+  <div class="topline"><div><b>Solana Market</b><div class="sub">Data pasar Mainnet live · Wallet & transaksi pada Devnet</div></div><div class="status" id="feedStatus">Menghubungkan ke sumber data…</div></div>
+  <section class="stats">
+    <div class="stat"><label>Market Cap (token tampil)</label><strong id="marketCap">—</strong></div>
+    <div class="stat"><label>Volume 24 Jam</label><strong id="volume24">—</strong></div>
+    <div class="stat"><label>Pasangan ditemukan</label><strong id="pairCount">—</strong></div>
+    <div class="stat"><label>Wallet Devnet</label><strong id="walletBalance">—</strong></div>
+  </section>
+  <div class="tabs" id="tabs">
+    <button class="active" data-tab="all">All Tokens</button><button data-tab="new">New Pairs</button>
+    <button data-tab="trending">Trending</button><button data-tab="gainers">Gainers</button><button data-tab="losers">Losers</button>
+  </div>
+  <div class="controls">
+    <input id="search" placeholder="Cari nama token, simbol, atau alamat…" autocomplete="off">
+    <select id="volumeFilter"><option value="all">All Volume</option><option value="10000">Volume &gt; $10K</option><option value="100000">Volume &gt; $100K</option><option value="1000000">Volume &gt; $1M</option></select>
+    <select id="sort"><option value="volume">Sort: Volume</option><option value="change">Sort: 24H Change</option><option value="liquidity">Sort: Liquidity</option><option value="marketcap">Sort: Market Cap</option></select>
+  </div>
+  <section class="panel">
+    <div class="panel-head"><span id="tableTitle">All Tokens</span><span class="status" id="updatedAt">Menunggu data…</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Token</th><th>Price USD</th><th>24H Change</th><th>Volume 24H</th><th>Liquidity</th><th>Market Cap</th><th>Action</th></tr></thead><tbody id="tokenRows"><tr><td colspan="7" class="empty">Mengambil data pasar live…</td></tr></tbody></table></div>
+  </section>
+  <div class="grid2">
+    <section class="panel pad"><b>Wallet & Network</b><div class="wallet-info" id="walletInfo" style="margin-top:10px">Wallet belum terhubung.<br>Hubungkan Phantom untuk membaca alamat dan saldo Devnet.</div><div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button id="airdropBtn" disabled>Request 1 SOL Devnet</button><button id="disconnectBtn" disabled>Disconnect</button></div></section>
+    <section class="panel pad"><b>Swap Center</b><p class="sub">Pilih Buy atau Sell pada token untuk membuka detail pasangan.</p><div class="notice">Mode transaksi saat ini DEVNET. Data DexScreener berasal dari pasar MAINNET. Jupiter Swap API yang tersedia untuk integrasi publik ditujukan pada likuiditas Mainnet; jangan menganggap quote Mainnet sebagai transaksi Devnet. Eksekusi swap Devnet perlu pool dan router yang memang tersedia di Devnet.</div><p class="sub" style="margin-bottom:0">Fitur swap sengaja belum mengirim transaksi agar tidak menyesatkan atau memakai jaringan yang salah.</p></section>
+  </div>
+</main>
+<footer>SOLX TRADE • Prototype development build • Jangan pernah membagikan seed phrase atau private key.</footer>
+
+<div class="modal" id="tradeModal"><div class="dialog">
+  <h2 id="tradeTitle">Token</h2><div id="tradeDetails" class="sub"></div>
+  <label>Alamat token</label><input class="swap-input" id="tradeAddress" readonly>
+  <div class="notice" style="margin-top:14px">Swap belum diaktifkan pada build ini. Pasangan dan harga yang terlihat berasal dari Mainnet, sedangkan wallet berada di Devnet. Periksa jaringan dan likuiditas Devnet sebelum mengaktifkan transaksi.</div>
+  <div class="dialog-actions"><button id="openPair">Lihat Pair</button><button id="closeModal" class="primary">Tutup</button></div>
+</div></div>
+
+<script>
+const DEVNET_RPC = "https://api.devnet.solana.com";
+const connection = window.solanaWeb3 ? new solanaWeb3.Connection(DEVNET_RPC, "confirmed") : null;
+const $ = id => document.getElementById(id);
+let allPairs = [], activeTab = "all", wallet = null, pollTimer = null;
+
+const money = n => {
+  if (n == null || !Number.isFinite(Number(n))) return "—";
+  n = Number(n);
+  return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:n<0.01?8:2});
+};
+const compact = n => n == null ? "—" : "$"+Intl.NumberFormat("en-US",{notation:"compact",maximumFractionDigits:2}).format(n);
+const safe = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const first = (a,b) => a ?? b ?? null;
+
+async function fetchJson(url){
+  const r = await fetch(url,{headers:{"Accept":"application/json"}});
+  if(!r.ok) throw new Error("HTTP "+r.status+" saat mengambil data");
+  return r.json();
+}
+function normalizePair(p){
+  return {
+    name:p.baseToken?.name || "Unknown", symbol:p.baseToken?.symbol || "—",
+    address:p.baseToken?.address || "", price:Number(p.priceUsd)||0,
+    change:Number(p.priceChange?.h24)||0, volume:Number(p.volume?.h24)||0,
+    liquidity:Number(p.liquidity?.usd)||0, marketcap:Number(first(p.marketCap,p.fdv))||0,
+    pairAddress:p.pairAddress||"", url:p.url||"", image:p.info?.imageUrl||"",
+    created:p.pairCreatedAt||0, buys:Number(p.txns?.h24?.buys)||0, sells:Number(p.txns?.h24?.sells)||0,
+    dex:p.dexId||""
+  };
+}
+async function loadMarket(){
+  $("feedStatus").innerHTML='<span class="dot"></span>Memperbarui data…';
+  const queries = ["SOL/USDC","BONK SOL","WIF SOL","JUP SOL","POPCAT SOL","meme coin solana"];
+  try{
+    const results = await Promise.allSettled(queries.map(q=>fetchJson("https://api.dexscreener.com/latest/dex/search?q="+encodeURIComponent(q))));
+    const map = new Map();
+    for(const result of results){
+      if(result.status!=="fulfilled") continue;
+      for(const p of (result.value.pairs||[])){
+        if(p.chainId!=="solana" || !p.baseToken?.address) continue;
+        const item=normalizePair(p), key=item.address;
+        const old=map.get(key);
+        if(!old || item.liquidity>old.liquidity) map.set(key,item);
+      }
+    }
+    allPairs=[...map.values()];
+    if(!allPairs.length) throw new Error("Belum ada pasangan yang dapat ditampilkan");
+    updateStats(); render();
+    $("feedStatus").innerHTML='<span class="dot"></span>Data live aktif';
+    $("updatedAt").textContent="Update "+new Date().toLocaleTimeString("id-ID");
+  }catch(e){
+    $("feedStatus").textContent="Data feed bermasalah";
+    if(!allPairs.length) $("tokenRows").innerHTML='<tr><td colspan="7" class="empty">'+safe(e.message)+'. Periksa koneksi internet lalu muat ulang.</td></tr>';
+    console.error(e);
+  }
+}
+function updateStats(){
+  const cap=allPairs.reduce((s,p)=>s+p.marketcap,0), vol=allPairs.reduce((s,p)=>s+p.volume,0);
+  $("marketCap").textContent=compact(cap); $("volume24").textContent=compact(vol);
+  $("pairCount").textContent=allPairs.length.toLocaleString("id-ID");
+}
+function getVisible(){
+  let list=[...allPairs], q=$("search").value.trim().toLowerCase(), min=$("volumeFilter").value;
+  if(q) list=list.filter(p=>[p.name,p.symbol,p.address].some(v=>String(v).toLowerCase().includes(q)));
+  if(min!=="all") list=list.filter(p=>p.volume>=Number(min));
+  if(activeTab==="new") list=list.filter(p=>p.created).sort((a,b)=>b.created-a.created);
+  if(activeTab==="trending") list.sort((a,b)=>(b.volume+b.liquidity*.15)-(a.volume+a.liquidity*.15));
+  if(activeTab==="gainers") list=list.filter(p=>p.change>0);
+  if(activeTab==="losers") list=list.filter(p=>p.change<0);
+  const sort=$("sort").value;
+  if(activeTab!=="new") list.sort((a,b)=>sort==="change"?b.change-a.change:sort==="liquidity"?b.liquidity-a.liquidity:sort==="marketcap"?b.marketcap-a.marketcap:b.volume-a.volume);
+  return list;
+}
+function render(){
+  const list=getVisible();
+  $("tableTitle").textContent=({all:"All Tokens",new:"New Pairs",trending:"Trending",gainers:"Gainers",losers:"Losers"})[activeTab];
+  if(!list.length){$("tokenRows").innerHTML='<tr><td colspan="7" class="empty">Tidak ada token yang cocok dengan filter.</td></tr>';return}
+  $("tokenRows").innerHTML=list.slice(0,100).map(p=>{
+    const avatar=p.image?'<img src="'+safe(p.image)+'" onerror="this.remove()">':safe((p.symbol||"?").slice(0,1));
+    const changeClass=p.change>=0?"green":"red";
+    return `<tr>
+      <td><div class="token"><div class="avatar">${avatar}</div><div><div class="token-name">${safe(p.name)}</div><div class="token-symbol">${safe(p.symbol)}</div></div></div></td>
+      <td>${money(p.price)}</td><td class="${changeClass}">${p.change>=0?"+":""}${p.change.toFixed(2)}%</td>
+      <td>${compact(p.volume)}</td><td>${compact(p.liquidity)}</td><td>${compact(p.marketcap)}</td>
+      <td><div class="actions"><button class="buy" data-action="Buy" data-address="${safe(p.address)}">Buy</button><button class="sell" data-action="Sell" data-address="${safe(p.address)}">Sell</button></div></td>
+    </tr>`;
+  }).join("");
+}
+function openTrade(address,action){
+  const p=allPairs.find(x=>x.address===address); if(!p)return;
+  $("tradeTitle").textContent=action+" "+p.symbol;
+  $("tradeDetails").textContent=`${p.name} · ${money(p.price)} · 24H ${p.change.toFixed(2)}%`;
+  $("tradeAddress").value=p.address;
+  $("openPair").onclick=()=>{if(p.url)window.open(p.url,"_blank","noopener")};
+  $("tradeModal").classList.add("show");
+}
+$("tokenRows").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-address]"); if(b)openTrade(b.dataset.address,b.dataset.action);
+});
+$("closeModal").onclick=()=>$("tradeModal").classList.remove("show");
+$("tradeModal").addEventListener("click",e=>{if(e.target===$("tradeModal"))$("tradeModal").classList.remove("show")});
+$("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-tab]");if(!b)return;
+  activeTab=b.dataset.tab;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("active",x===b));render();
+});
+["search","volumeFilter","sort"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+
+async function connectWallet(){
+  if(!window.solana?.isPhantom){alert("Phantom Wallet tidak ditemukan. Instal ekstensi Phantom dari situs resmi phantom.app.");return}
+  try{
+    const resp=await window.solana.connect(); wallet=resp.publicKey;
+    $("walletBtn").textContent=wallet.toString().slice(0,4)+"…"+wallet.toString().slice(-4);
+    $("disconnectBtn").disabled=false;$("airdropBtn").disabled=false;
+    await refreshBalance();
+  }catch(e){alert("Koneksi wallet dibatalkan atau gagal: "+e.message)}
+}
+async function refreshBalance(){
+  if(!wallet||!connection)return;
+  try{
+    const lamports=await connection.getBalance(wallet);
+    const sol=(lamports/solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+    $("walletBalance").textContent=sol+" SOL";
+    $("walletInfo").innerHTML=`<strong>Terhubung</strong><br>Alamat: ${safe(wallet.toString())}<br>Saldo Devnet: <strong>${sol} SOL</strong><br>RPC: api.devnet.solana.com`;
+  }catch(e){$("walletInfo").textContent="Gagal membaca saldo Devnet: "+e.message}
+}
+$("walletBtn").onclick=connectWallet;
+$("disconnectBtn").onclick=async()=>{
+  try{await window.solana?.disconnect()}catch(e){}
+  wallet=null;$("walletBtn").textContent="Connect Wallet";$("walletBalance").textContent="—";
+  $("walletInfo").textContent="Wallet terputus.";$("disconnectBtn").disabled=true;$("airdropBtn").disabled=true;
+};
+$("airdropBtn").onclick=async()=>{
+  if(!wallet||!connection)return;
+  $("airdropBtn").disabled=true;
+  try{
+    const sig=await connection.requestAirdrop(wallet,solanaWeb3.LAMPORTS_PER_SOL);
+    await connection.confirmTransaction(sig,"confirmed");await refreshBalance();
+    alert("Airdrop Devnet berhasil. Signature: "+sig);
+  }catch(e){alert("Airdrop gagal. Faucet Devnet mungkin sedang membatasi permintaan: "+e.message)}
+  finally{$("airdropBtn").disabled=false}
+};
+if(window.solana?.isPhantom){
+  window.solana.on("accountChanged",pk=>{wallet=pk||null;if(wallet)refreshBalance();else{$("walletBtn").textContent="Connect Wallet";$("walletBalance").textContent="—";$("walletInfo").textContent="Wallet terputus."}});
+}
+loadMarket();
+pollTimer=setInterval(loadMarket,30000);
+</script>
+</body>
+</html>
